@@ -1,33 +1,39 @@
 var keys = document.querySelectorAll('#calculadora span');
-var operators = ['+', '-', '*', '/'];
+var operatorSelected = false;
 var decimalAdded = false;
 var valores = [];
 
-const operacao = new Operacao(valores);
+var operacao = new Operacao(valores);
+
+var input = document.querySelector('.screen');
+var inputVal = input.innerHTML;
 
 for(var i = 0; i < keys.length; i++) {
 	keys[i].onclick = function(e) {
-		var input = document.querySelector('.screen');
-		var inputVal = input.innerHTML;
+		inputVal = input.innerHTML;
 		var btnVal = this.innerHTML;
 
-		operacao.valores = regex(inputVal);
+		if (operatorSelected){
+			input.innerHTML = '';
+		}
 
 		if(btnVal == 'C') {
 			input.innerHTML = '';
-		} else{
-			input.innerHTML += btnVal;
-		}
+			valores = [];
+			operacao = new Operacao(valores);
+		} else if (btnVal == '+') {
+			operatorSelected = true;
+			salvaOperando();
+			console.log(operacao.valores)
 
-		if (btnVal == '+') {
-			// valores = regex(inputVal);
 			if (operacao.valores.length >= 2){
 				result = operacao.sum();
-				operacao.valores.push(result);
-				console.log(operacao.valores);
+				operacao.valores = [];
+				operatorSelected = false
 				input.innerHTML = result;
 			}
-			
+		} else {
+			input.innerHTML += btnVal;
 		}
 
 		if (btnVal == '-') {
@@ -37,6 +43,8 @@ for(var i = 0; i < keys.length; i++) {
 		}
 		
 		if (btnVal == '='){
+			
+
 			const element = regex(inputVal);
 			input.innerHTML = element;
 			console.log(element);
@@ -47,4 +55,8 @@ for(var i = 0; i < keys.length; i++) {
 function regex(text){
 	let regex = /\D/;
 	return text.split(regex);
+}
+
+function salvaOperando(){
+	operacao.valores.push(inputVal);
 }
