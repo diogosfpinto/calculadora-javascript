@@ -14,10 +14,6 @@ for(var i = 0; i < keys.length; i++) {
 		inputVal = input.innerHTML;
 		var btnVal = this.innerHTML;
 
-		// if (!operatorSelected){
-		// 	input.innerHTML = '';
-		// }
-
 		if(btnVal == 'C') {
 			input.innerHTML = '';
 			operador = '';
@@ -38,14 +34,25 @@ for(var i = 0; i < keys.length; i++) {
 				console.log("valor está vazio");
 			}
 
+		} else if(btnVal == '-'){
+		
+			operador = '-';
+			if (inputVal != ''){
+				if (!isResult){
+					salvaOperando();
+				} else {
+					input.innerHTML = '';
+				}
+			} else {
+				console.log('valor está vazio');
+			}
+
 		} else if (btnVal == '='){
 
-			if (operador == '+'){
-				salvaOperando();
-				result = calculaSoma();
-				isResult = true;
-				input.innerHTML = result;
-			}
+			salvaOperando();
+			calcula(operador, function(result){
+				mostraResultado(result);
+			});
 
 		} else { 
 			input.innerHTML += btnVal;
@@ -64,6 +71,17 @@ function salvaOperando(){
 	isResult = false;
 }
 
+function calcula(operador, myCallback){
+	var result;
+	if (operador == '+'){
+		result = calculaSoma();
+	} else if (operador == '-'){
+		result = calculaSubtracao();
+	}
+	
+	return myCallback(result);
+}
+
 function calculaSoma(){
 	if (operacao.valores.length >= 2){
 		operatorSelected = false;
@@ -73,5 +91,21 @@ function calculaSoma(){
 	console.log(operacao.valores)
 	
 	return result;
+}
 
+function calculaSubtracao(){
+	if (operacao.valores.length >= 2){
+		operatorSelected = false;
+	}
+
+	result = operacao.subtract();
+	operacao.valores = [result];
+	console.log(operacao.valores);
+
+	return result;
+}
+
+function mostraResultado(result) {
+	isResult = true;
+	input.innerHTML = result;
 }
