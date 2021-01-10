@@ -1,6 +1,7 @@
 var keys = document.querySelectorAll('#calculadora span');
 var operatorSelected = false;
 var operador = '';
+var isResult = false;
 var valores = [];
 
 var operacao = new Operacao(valores);
@@ -20,24 +21,29 @@ for(var i = 0; i < keys.length; i++) {
 		if(btnVal == 'C') {
 			input.innerHTML = '';
 			operador = '';
+			isResult = false;
 			valores = [];
 			operacao = new Operacao(valores);
 
 		} else if (btnVal == '+') {
 
 			operador = '+';
-			if (operacao.valores.length == 0){
-				salvaOperando();
+			if (inputVal != ''){
+				if (!isResult){
+					salvaOperando();
+				} else {
+					input.innerHTML = '';
+				}
 			} else {
-				input.innerHTML = '';
+				console.log("valor está vazio");
 			}
 
 		} else if (btnVal == '='){
 
 			if (operador == '+'){
 				salvaOperando();
-				console.log(operacao.valores)
 				result = calculaSoma();
+				isResult = true;
 				input.innerHTML = result;
 			}
 
@@ -53,12 +59,9 @@ function regex(text){
 }
 
 function salvaOperando(){
-	if (inputVal != ''){
-		operacao.valores.push(parseInt(inputVal));
-		input.innerHTML = '';
-	} else {
-		console.log("valor está vazio");
-	}
+	operacao.valores.push(parseInt(inputVal));
+	input.innerHTML = '';
+	isResult = false;
 }
 
 function calculaSoma(){
@@ -67,6 +70,7 @@ function calculaSoma(){
 	}
 	result = operacao.sum();
 	operacao.valores = [result];
+	console.log(operacao.valores)
 	
 	return result;
 
