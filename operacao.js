@@ -8,8 +8,7 @@ class Operacao {
         var soma = 0;
 
         this._valores.forEach(element => {
-            const elementoFormatado = parseInt(element);
-            soma += elementoFormatado;
+            soma += element;
         });
         return soma;
     }

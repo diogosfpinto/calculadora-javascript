@@ -1,6 +1,6 @@
 var keys = document.querySelectorAll('#calculadora span');
 var operatorSelected = false;
-var decimalAdded = false;
+var operador = '';
 var valores = [];
 
 var operacao = new Operacao(valores);
@@ -13,41 +13,36 @@ for(var i = 0; i < keys.length; i++) {
 		inputVal = input.innerHTML;
 		var btnVal = this.innerHTML;
 
-		if (operatorSelected){
-			input.innerHTML = '';
-		}
+		// if (!operatorSelected){
+		// 	input.innerHTML = '';
+		// }
 
 		if(btnVal == 'C') {
 			input.innerHTML = '';
+			operador = '';
 			valores = [];
 			operacao = new Operacao(valores);
-		} else if (btnVal == '+') {
-			operatorSelected = true;
-			salvaOperando();
-			console.log(operacao.valores)
 
-			if (operacao.valores.length >= 2){
-				result = operacao.sum();
-				operacao.valores = [];
-				operatorSelected = false
+		} else if (btnVal == '+') {
+
+			operador = '+';
+			if (operacao.valores.length == 0){
+				salvaOperando();
+			} else {
+				input.innerHTML = '';
+			}
+
+		} else if (btnVal == '='){
+
+			if (operador == '+'){
+				salvaOperando();
+				console.log(operacao.valores)
+				result = calculaSoma();
 				input.innerHTML = result;
 			}
-		} else {
+
+		} else { 
 			input.innerHTML += btnVal;
-		}
-
-		if (btnVal == '-') {
-			valores= regex(inputVal);
-			// operacao.firstValue(valores);
-			console.log(valores);
-		}
-		
-		if (btnVal == '='){
-			
-
-			const element = regex(inputVal);
-			input.innerHTML = element;
-			console.log(element);
 		}
 	}
 }
@@ -58,5 +53,21 @@ function regex(text){
 }
 
 function salvaOperando(){
-	operacao.valores.push(inputVal);
+	if (inputVal != ''){
+		operacao.valores.push(parseInt(inputVal));
+		input.innerHTML = '';
+	} else {
+		console.log("valor está vazio");
+	}
+}
+
+function calculaSoma(){
+	if (operacao.valores.length >= 2){
+		operatorSelected = false;
+	}
+	result = operacao.sum();
+	operacao.valores = [result];
+	
+	return result;
+
 }
